@@ -94,6 +94,7 @@ iif = function(condicion, val1, val2) {
 
 # ANÁLISIS DEL RAW
 library(tiff)
+Gamma=2.2
 
 # Lee RAW
 # dcraw -v -d -r 1 1 1 1 -S 16382 -t 0 -4 -T blackcat.dng
@@ -102,18 +103,15 @@ raw=LoadRAW("blackcat.dng")
 # De-bayering
 img=DebayerRAW(raw, averageG=F)
 img=img[,,c(1,2,4)]  # Descartamos G2 apilando R, G1, B
-SaveRAW(img, filename="debayer.tif", gamma=2.2)
+SaveRAW(img, filename="debayer.tif", gamma=Gamma)
 
-
-# Reescaalado
-Gamma=2.2
-
+# Reescalados
 for (N in 4:12) {
     DIMY=as.integer(dim(img)[1]/N)
     DIMX=as.integer(dim(img)[2]/N)
     print(paste0("N=",N," -> ", DIMX, "x", DIMY,
-        " píxeles (pérdida: ", dim(img)[1]-DIMY*N,
-        " filas y ", dim(img)[2]-DIMX*N, " columnas)"))
+        " pixels (", dim(img)[1]-DIMY*N,
+        " rows and ", dim(img)[2]-DIMX*N, " cols dropped)"))
     imgresize=array(0, c(DIMY,DIMX,3))
     
     for (i in 1:DIMY) {
