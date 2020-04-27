@@ -130,5 +130,3 @@ for (N in 4:15) {
         bits.per.sample=16, compression="LZW")
     ShowRAW(imgresize)
 }
-
-
