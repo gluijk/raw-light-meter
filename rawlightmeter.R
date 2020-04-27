@@ -15,7 +15,8 @@ LoadRAW = function(filename, verbose=T, scale=T, integer=F) {
     cmd=paste0("dcraw ",  # Construimos comando de línea DCRAW
                iif(verbose, "-v ", ""),
                iif(scale, "-d -r 1 1 1 1", "-D"),  # RAW escalado (-d) o puro (-D)
-               " -S 16382 -t 0 -4 -T ", filename)  # Sin rotación (-t), lineal (-4), TIFF (-T)
+               " -S 16382",  # Sat. Canon EOS R a ISO400
+               " -t 0 -4 -T ", filename)  # Sin rotación (-t), lineal (-4), TIFF (-T)
     if (verbose) cat(paste0(cmd, "\n"))  # Mostrar comando en consola
     system(cmd)
     
@@ -94,7 +95,6 @@ iif = function(condicion, val1, val2) {
 
 # ANÁLISIS DEL RAW
 library(tiff)
-Gamma=2.2
 
 # Lee RAW
 # dcraw -v -d -r 1 1 1 1 -S 16382 -t 0 -4 -T blackcat.dng
@@ -102,11 +102,11 @@ raw=LoadRAW("blackcat.dng")
 
 # De-bayering
 img=DebayerRAW(raw, averageG=F)
-img=img[,,c(1,2,4)]  # Descartamos G2 apilando R, G1, B
-SaveRAW(img, filename="debayer.tif", gamma=Gamma)
+img=img[,,c(1:2,4)]  # Descartamos G2 apilando R, G1, B
+SaveRAW(img, filename="debayer.tif", gamma=1.0)
 
 # Reescalados
-for (N in 4:12) {
+for (N in 4:15) {
     DIMY=as.integer(dim(img)[1]/N)
     DIMX=as.integer(dim(img)[2]/N)
     print(paste0("N=",N," -> ", DIMX, "x", DIMY,
@@ -124,8 +124,11 @@ for (N in 4:12) {
         }
     }
     
-    writeTIFF(imgresize^(1/Gamma), paste0("imgresize_",N,".tif"),
-              bits.per.sample=16, compression="LZW")
+    # Requerida curva gamma 2,2 para no perder niveles
+    # por redondeo al guardar TIFF de 16 bits
+    writeTIFF(imgresize^(1/2.2), paste0("debayerresize_",N,"x",N,".tif"),
+        bits.per.sample=16, compression="LZW")
+    ShowRAW(imgresize)
 }
-ShowRAW(imgresize)
+
 
