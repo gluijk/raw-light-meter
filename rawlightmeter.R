@@ -16,7 +16,7 @@ LoadRAW = function(filename, verbose=T, scale=T, integer=F) {
                iif(verbose, "-v ", ""),
                iif(scale, "-d -r 1 1 1 1", "-D"),  # RAW escalado (-d) o puro (-D)
                " -S 16382",  # Sat. Canon EOS R a ISO400
-               " -t 0 -4 -T ", filename)  # Sin rotación (-t), lineal (-4), TIFF (-T)
+               " -t 0 -4 -T ",filename)  # Sin rotación (-t), lineal (-4), TIFF (-T)
     if (verbose) cat(paste0(cmd, "\n"))  # Mostrar comando en consola
     system(cmd)
     
@@ -82,9 +82,9 @@ SaveRAW = function(img, filename, trunc=T, gamma=2.2) {
     img[img<0]=0
     if (trunc) img[img>1]=1
     if (tolower(substr(filename, nchar(filename)-3,
-                       nchar(filename))) != ".tif") filename=paste0(filename, ".tif")
+        nchar(filename))) != ".tif") filename=paste0(filename, ".tif")
     writeTIFF((img / max(max(img),1))^(1/gamma), filename,
-              bits.per.sample=16, compression="LZW")
+        bits.per.sample=16, compression="LZW")
 }
 
 iif = function(condicion, val1, val2) {
@@ -109,9 +109,9 @@ SaveRAW(img, filename="debayer.tif", gamma=1.0)
 for (N in 4:15) {
     DIMY=as.integer(dim(img)[1]/N)
     DIMX=as.integer(dim(img)[2]/N)
-    print(paste0("N=",N," -> ", DIMX, "x", DIMY,
-        " pixels (", dim(img)[1]-DIMY*N,
-        " rows and ", dim(img)[2]-DIMX*N, " cols dropped)"))
+    print(paste0("N=",N," -> ", DIMX, "x", DIMY, " pixels (",
+        dim(img)[1]-DIMY*N, " rows and ",
+        dim(img)[2]-DIMX*N, " cols dropped)"))
     imgresize=array(0, c(DIMY,DIMX,3))
     
     for (i in 1:DIMY) {
