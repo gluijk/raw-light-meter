@@ -1,22 +1,22 @@
-# El RAW como fot髆etro de precisi髇
-# www.datosimagensonido.com
+# El RAW como fot贸metro de precisi贸n
+# www.overfitting.net
 
 
 # FUNCIONES RAW
 
 LoadRAW = function(filename, verbose=T, scale=T, integer=F) {
-    # Lee archivo RAW carg醤dolo en una matriz
-    # scale=T: sustrae offset de negro y escala saturaci髇 al fondo de escala
-    #          en otro caso no escala valores num閞icos RAW
+    # Lee archivo RAW carg谩ndolo en una matriz
+    # scale=T: sustrae offset de negro y escala saturaci贸n al fondo de escala
+    #          en otro caso no escala valores num茅ricos RAW
     # integer=F: datos RAW en rango coma flotante 0..1
     #            en otro caso rango entero 0..65535 (16 bits)
     library(tiff)  # Para leer el TIFF generado por DCRAW
     
-    cmd=paste0("dcraw ",  # Construimos comando de l韓ea DCRAW
+    cmd=paste0("dcraw ",  # Construimos comando de l铆nea DCRAW
                iif(verbose, "-v ", ""),
                iif(scale, "-d -r 1 1 1 1", "-D"),  # RAW escalado (-d) o puro (-D)
                " -S 16382",  # Sat. Canon EOS R a ISO400
-               " -t 0 -4 -T ",filename)  # Sin rotaci髇 (-t), lineal (-4), TIFF (-T)
+               " -t 0 -4 -T ",filename)  # Sin rotaci贸n (-t), lineal (-4), TIFF (-T)
     if (verbose) cat(paste0(cmd, "\n"))  # Mostrar comando en consola
     system(cmd)
     
@@ -28,13 +28,13 @@ LoadRAW = function(filename, verbose=T, scale=T, integer=F) {
 }
 
 DebayerRAW = function(raw, pattern="RG/GB", averageG=T) {
-    # Deshace patr髇 de Bayer (requiere RAW)
+    # Deshace patr贸n de Bayer (requiere RAW)
     NROW=nrow(raw)
     if (NROW%%2 | ncol(raw)%%2 |
         !(pattern %in% c("RG/GB", "BG/GR", "GR/BG", "GB/RG"))) return (-1)
     
-    # 蚽dices Bayer: se calculan y almacenan solo una vez
-    i=which(row(raw)%%2 & col(raw)%%2)  # Fotosito R de un patr髇 RG/GB
+    # 脥ndices Bayer: se calculan y almacenan solo una vez
+    i=which(row(raw)%%2 & col(raw)%%2)  # Fotosito R de un patr贸n RG/GB
     if (averageG) {  # Devuelve {R, (G1+G2)/2, B}
         if        (pattern=="RG/GB") {
             img=c(raw[i], (raw[i+NROW]+raw[i+1])/2, raw[i+NROW+1])
@@ -93,7 +93,7 @@ iif = function(condicion, val1, val2) {
 }
 
 
-# AN罫ISIS DEL RAW
+# AN脕LISIS DEL RAW
 library(tiff)
 
 # Lee RAW
