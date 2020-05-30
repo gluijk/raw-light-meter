@@ -1,5 +1,6 @@
 # El RAW como fotómetro de precisión
 # www.overfitting.net
+# https://www.overfitting.net/2020/04/el-raw-como-fotometro-de-precision.html
 
 
 # FUNCIONES RAW
